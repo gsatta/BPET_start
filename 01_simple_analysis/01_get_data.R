@@ -25,12 +25,14 @@ sel_muni <- "Orotava, La"
 ## 2.1. Get Spain municipalities --------------
 
 ## Get Spain municipalities
+tic()
 spanish_muni_sf <- gisco_get_communes(
     country = "Spain",
     cache = TRUE,
     update_cache = TRUE
 ) |> 
     st_transform(sel_crs)
+toc()
 
 ## Visualize
 mapView(spanish_muni_sf)
@@ -80,25 +82,36 @@ mapView(selected_muni_sf)
 fs::dir_create("data/sentinel")
 
 ## Download Sentinel-2 image
-tic() # inizia il conteggio del tempo di elaborazione
+# tic() # inizia il conteggio del tempo di elaborazione
+# 
+# sentinel_path <- get_sentinel2_imagery(
+#     aoi             = selected_muni_sf,
+#     start_date      = "2024-05-04",
+#     end_date        = "2024-05-05",
+#     output_filename = str_glue("data/sentinel/{selected_muni_sf$id}.tif")
+# )
+# toc() # termina il conteggio del tempo per l'elaborazione
 
-sentinel_path <- get_sentinel2_imagery(
-    aoi             = selected_muni_sf,
-    start_date      = "2024-05-04",
-    end_date        = "2024-05-05",
-    output_filename = str_glue("data/sentinel/{selected_muni_sf$id}.tif")
-)
-toc() # termina il conteggio del tempo per l'elaborazione
+# Visto che la funzione non funziona, la carico manualmente
+sentinel_path <- "./data/sentinel/ES6538026.tif"
 
 ## Visualize
 sentine_sr <- rast(sentinel_path)
 
-sentine_sr / 10000
+(sentine_sr / 10000) |> 
+    plotRGB(4, 3, 2, stretch = "lin")
+
+plot(
+    st_geometry(selected_muni_sf),
+    add    = TRUE,
+    border = "RED",
+    lwd    = 2
+)
 
 # 4. Export ---------------------------------------------------------------
 
 ## Export municipality
-
+write_sf(selected_muni_sf, "data/municipality.geojson")
 
 
 
