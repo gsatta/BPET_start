@@ -67,10 +67,13 @@ mapView(tenerife_muni_sf)
 ## 3.1. Select a municipality -----------------
 
 ## Filter municipality
-
+selected_muni_sf <- tenerife_muni_sf |> 
+    filter(
+        NAME_LATN == sel_muni
+    )
 
 ## Visualize
-
+mapView(selected_muni_sf)
 
 ## 3.2. Get satellite image -------------------
 
