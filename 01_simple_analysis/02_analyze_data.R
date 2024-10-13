@@ -12,7 +12,6 @@
 
 library(sf)
 library(terra)
-library(tictoc)
 library(tidyterra)
 library(tidyverse)
 
