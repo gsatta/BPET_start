@@ -76,12 +76,24 @@ selected_muni_sf <- tenerife_muni_sf |>
 mapView(selected_muni_sf)
 
 ## 3.2. Get satellite image -------------------
+# create a data folder
+fs::dir_create("data/sentinel")
 
 ## Download Sentinel-2 image
+tic() # inizia il conteggio del tempo di elaborazione
 
+sentinel_path <- get_sentinel2_imagery(
+    aoi             = selected_muni_sf,
+    start_date      = "2024-05-04",
+    end_date        = "2024-05-05",
+    output_filename = str_glue("data/sentinel/{selected_muni_sf$id}.tif")
+)
+toc() # termina il conteggio del tempo per l'elaborazione
 
 ## Visualize
+sentine_sr <- rast(sentinel_path)
 
+sentine_sr / 10000
 
 # 4. Export ---------------------------------------------------------------
 
