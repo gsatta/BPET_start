@@ -29,3 +29,22 @@ get_tenerife_muni <- function(sel_crs = "EPSG:25828") {
         y = tenerife_sf
     )
 }
+
+## FUNCTION: Download sat image for each municipality
+get_sentinel_2_muni  <- function(data) {
+    
+    ## Select bands
+    bands <- rsi::sentinel2_band_mapping$planetary_computer_v1[c("B04", "B08")]
+
+    ## Download Sentinel-2 image
+    sentinel_path <- get_sentinel2_imagery(
+        aoi             = data,
+        start_date      = "2024-05-04",
+        end_date        = "2024-05-05",
+        asset_names     = bands,
+        output_filename = str_glue("data/sentinel/{data$id}.tif")
+    )
+    
+    ## Scale 
+    rast(sentinel_path) / 10000
+}

@@ -29,8 +29,19 @@ tenerife_muni_sf <-  get_tenerife_muni()
 
 ## Convert to list, where each row is an element
 
-## Get Sentinel image for all the municipalities
+tenerife_muni_list <- split(
+    tenerife_muni_sf,
+    tenerife_muni_sf$id
+)
 
+## Get Sentinel image for all the municipalities
+tic()
+sentinel_list <- map(
+    tenerife_muni_list,
+    get_sentinel_2_muni,
+    .progress = TRUE
+)
+toc()
 
 # 3. Prepare data ---------------------------------------------------------
 
