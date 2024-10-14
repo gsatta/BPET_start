@@ -27,8 +27,10 @@ source("R/utils.R")
 ## Get Tenerife municipalities
 tenerife_muni_sf <-  get_tenerife_muni()
 
-## Convert to list, where each row is an element
 
+
+
+## Convert to list, where each row is an element
 tenerife_muni_list <- split(
     tenerife_muni_sf,
     tenerife_muni_sf$id
@@ -46,6 +48,13 @@ toc()
 # 3. Prepare data ---------------------------------------------------------
 
 ## Calculate NDVI
+tic()
+ndvi_list <- map(
+    sentinel_list,
+    calculate_ndvi,
+    .progress = TRUE
+)
+toc()
 
 
 # 4. Maps -----------------------------------------------------------------

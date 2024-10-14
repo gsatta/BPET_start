@@ -1,5 +1,17 @@
 
+## FUNCTION: Fix municipalities names
+fix_muni_names <-  function(name) {
+    
+    muni_split <- name |> 
+        str_split(",") |> 
+        pluck(1)
+    
+    paste(muni_split[2], muni_split[1]) |> 
+        str_trim()
+}
 
+# Vectorize the function
+fix_muni_names_vect <-  Vectorize(fix_muni_names)
 
 ## FUNCTION: download Tenerife municipalities
 get_tenerife_muni <- function(sel_crs = "EPSG:25828") {
@@ -24,10 +36,26 @@ get_tenerife_muni <- function(sel_crs = "EPSG:25828") {
         st_transform(sel_crs)  
     
     ## Filter municipalities intersecting Tenerife Island
-    tenerife_muni_sf <- st_filter(
+    filtered_municipalities <- st_filter(
         x = spanish_muni_sf,
         y = tenerife_sf
     )
+    
+    ## Fix the municipality names
+    filtered_municipalities |> 
+        mutate(
+            change = if_else(
+                str_detect(COMM_NAME, ","), TRUE, FALSE
+            )
+        ) |> 
+        mutate(
+            fixed_names = if_else(
+                change,
+                fix_muni_names_vect(COMM_NAME),
+                COMM_NAME
+            )
+        )
+    
 }
 
 ## FUNCTION: Download sat image for each municipality
@@ -48,3 +76,74 @@ get_sentinel_2_muni  <- function(data) {
     ## Scale 
     rast(sentinel_path) / 10000
 }
+
+## FUNCTION: Calculate NDVI
+
+calculate_ndvi <- function(data) {
+    ## Calculate NDVI
+    ndvi_sr <- (data$N - data$R) / (data$N + data$R)
+    ## Rename band
+    names(ndvi_sr) <- "NDVI"
+    
+    ## Return NDVI
+    ndvi_sr
+}
+
+
+
+
+## FUNCTION: Calculate NDVI
+
+
+
+
+
+
+
+
+# ndvi_gg <- ggplot() +
+#     geom_spatraster(
+#         data = ndvi_sr
+#     ) +
+#     geom_sf(
+#         data = selected_muni_sf,
+#         color = "darkblue",
+#         fill = "transparent",
+#         lwd = 1
+#     ) +
+#     scale_fill_gradientn(
+#         colors = hcl.colors(20, "RdYlGn")
+#     ) +
+#     labs(
+#         title = str_glue("NDVI in La Orotava, Tenerife"),
+#         fill = "NDVI"
+#     ) +
+#     theme_void() +
+#     theme(
+#         plot.title = element_text(
+#             face   = "bold",
+#             size   = 14,
+#             family = "Roboto",
+#             hjust  = .5
+#         )
+#     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
