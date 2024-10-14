@@ -92,58 +92,37 @@ calculate_ndvi <- function(data) {
 
 
 
-## FUNCTION: Calculate NDVI
+## FUNCTION: create the map
 
-
-
-
-
-
-
-
-# ndvi_gg <- ggplot() +
-#     geom_spatraster(
-#         data = ndvi_sr
-#     ) +
-#     geom_sf(
-#         data = selected_muni_sf,
-#         color = "darkblue",
-#         fill = "transparent",
-#         lwd = 1
-#     ) +
-#     scale_fill_gradientn(
-#         colors = hcl.colors(20, "RdYlGn")
-#     ) +
-#     labs(
-#         title = str_glue("NDVI in La Orotava, Tenerife"),
-#         fill = "NDVI"
-#     ) +
-#     theme_void() +
-#     theme(
-#         plot.title = element_text(
-#             face   = "bold",
-#             size   = 14,
-#             family = "Roboto",
-#             hjust  = .5
-#         )
-#     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+create_ndvi_gg <-  function(ndvi_sr, muni_sf) {
+    
+    ggplot() +
+            geom_spatraster(
+                data = ndvi_sr
+            ) +
+            geom_sf(
+                data = muni_sf,
+                color = "darkblue",
+                fill = "transparent",
+                lwd = 1
+            ) +
+            scale_fill_gradientn(
+                colors = hcl.colors(20, "RdYlGn")
+            ) +
+            labs(
+                title = str_glue("NDVI in {muni_sf$fixed_names}, Tenerife"),
+                fill = "NDVI"
+            ) +
+            theme_void() +
+            theme(
+                plot.title = element_text(
+                    face   = "bold",
+                    size   = 14,
+                    family = "Roboto",
+                    hjust  = .5
+                )
+            )
+    
+}
 
 
